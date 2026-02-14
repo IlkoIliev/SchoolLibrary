@@ -1,0 +1,16 @@
+﻿@model SchoolLibrary.Data.Entities.Author
+
+<h2>Детайли за автор</h2>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Име</th>
+        <td>@Model.Name</td>
+    </tr>
+</table>
+
+<p>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Редактирай</a>
+    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Изтрий</a>
+    <a asp-action="Index" class="btn btn-secondary">Назад</a>
+</p>

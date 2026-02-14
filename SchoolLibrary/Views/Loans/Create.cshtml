@@ -1,0 +1,26 @@
+﻿@model SchoolLibrary.Models.Loans.LoanCreateFormModel
+
+<h2>Create Loan</h2>
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label class="form-label">Student</label>
+        <select asp-for="StudentId" asp-items="Model.Students" class="form-select"></select>
+        <span asp-validation-for="StudentId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Book</label>
+        <select asp-for="BookId" asp-items="Model.Books" class="form-select"></select>
+        <span asp-validation-for="BookId" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

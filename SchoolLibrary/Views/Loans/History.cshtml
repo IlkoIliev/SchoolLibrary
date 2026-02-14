@@ -1,0 +1,42 @@
+﻿@model List<SchoolLibrary.Data.Entities.Loan>
+
+<h2>Loans History</h2>
+
+<p>
+    <a asp-action="Index" class="btn btn-secondary">Active Loans</a>
+    <a asp-action="Create" class="btn btn-primary">+ New Loan</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Student</th>
+            <th>Book</th>
+            <th>Loan Date</th>
+            <th>Return Date</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var l in Model)
+        {
+            var isActive = l.ReturnDate == null;
+            <tr>
+                <td>@l.Student.FullName (@l.Student.Grade)</td>
+                <td>@l.Book.Title - @l.Book.Author.Name</td>
+                <td>@l.LoanDate</td>
+                <td>@(l.ReturnDate?.ToString() ?? "-")</td>
+                <td>
+                    @if (isActive)
+                    {
+                        <span class="badge bg-warning text-dark">Active</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-success">Returned</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

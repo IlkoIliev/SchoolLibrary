@@ -1,0 +1,18 @@
+﻿@model SchoolLibrary.Data.Entities.Book
+
+<h2>Детайли</h2>
+
+<dl class="row">
+    <dt class="col-sm-2">Title</dt>
+    <dd class="col-sm-10">@Model.Title</dd>
+
+    <dt class="col-sm-2">Author</dt>
+    <dd class="col-sm-10">@Model.Author?.Name</dd>
+
+    <dt class="col-sm-2">Year</dt>
+    <dd class="col-sm-10">@Model.Year</dd>
+</dl>
+
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+<a asp-action="Index" class="btn btn-secondary">Back</a>
+

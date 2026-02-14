@@ -1,0 +1,15 @@
+﻿@model SchoolLibrary.Data.Entities.Student
+
+<h2>Детайли за ученик</h2>
+
+<div class="card">
+    <div class="card-body">
+        <p><strong>Име:</strong> @Model.FullName</p>
+        <p><strong>Клас:</strong> @Model.Grade</p>
+    </div>
+</div>
+
+<div class="mt-3">
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Назад</a>
+</div>

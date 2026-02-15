@@ -18,8 +18,11 @@ namespace SchoolLibrary.Controllers
         }
 
         // Списък активни заеми
-        public async Task<IActionResult> Index()
-            => View(await _loanService.GetActiveAsync());
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
+        {
+            var result = await _loanService.GetActivePagedAsync(page, pageSize);
+            return View(result);
+        }
 
         [HttpGet]
         public async Task<IActionResult> Create()
@@ -67,7 +70,10 @@ namespace SchoolLibrary.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> History()
-            => View(await _loanService.GetHistoryAsync());
+        public async Task<IActionResult> History(int page = 1, int pageSize = 10)
+        {
+            var result = await _loanService.GetHistoryPagedAsync(page, pageSize);
+            return View(result);
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using SchoolLibrary.Data.Entities;
 using SchoolLibrary.Models.Books;
+using SchoolLibrary.Models.Paging;
 using SchoolLibrary.Repositories;
 
 namespace SchoolLibrary.Services
@@ -104,5 +105,22 @@ namespace SchoolLibrary.Services
 
         public Task<int> CountAsync()
             => _repo.CountAsync();
+
+        public async Task<PagedResult<Book>> GetPagedAsync(int page, int pageSize)
+        {
+            if (page < 1) page = 1;
+            if (pageSize < 1) pageSize = 10;
+            if (pageSize > 50) pageSize = 50; // защита
+
+            var (items, totalItems) = await _repo.GetPagedAsync(page, pageSize);
+
+            return new PagedResult<Book>
+            {
+                Items = items,
+                Page = page,
+                PageSize = pageSize,
+                TotalItems = totalItems
+            };
+        }
     }
 }

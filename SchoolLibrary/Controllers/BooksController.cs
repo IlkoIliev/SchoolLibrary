@@ -11,21 +11,24 @@ namespace SchoolLibrary.Controllers
 {
     public class BooksController : Controller
     {
-        private readonly BookService _service;
+        private readonly BookService _bookService;
         private readonly AuthorService _authorService;
 
         public BooksController(BookService service, AuthorService authorService)
         {
-            _service = service;
+            _bookService = service;
             _authorService = authorService;
         }
 
-        public async Task<IActionResult> Index()
-            => View(await _service.GetAllAsync());
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
+        {
+            var result = await _bookService.GetPagedAsync(page, pageSize);
+            return View(result);
+        }
 
         public async Task<IActionResult> Details(int id)
         {
-            var book = await _service.GetByIdAsync(id);
+            var book = await _bookService.GetByIdAsync(id);
             return book == null ? NotFound() : View(book);
         }
         [HttpGet]
@@ -49,7 +52,7 @@ namespace SchoolLibrary.Controllers
                 return View(model);
             }
 
-            var (ok, message) = await _service.AddAsync(model);
+            var (ok, message) = await _bookService.AddAsync(model);
             if (!ok)
             {
                 ModelState.AddModelError("", message);
@@ -65,7 +68,7 @@ namespace SchoolLibrary.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var book = await _service.GetByIdAsync(id);
+            var book = await _bookService.GetByIdAsync(id);
             if (book == null) return NotFound();
 
             var model = new BookFormModel
@@ -90,7 +93,7 @@ namespace SchoolLibrary.Controllers
                 return View(model);
             }
 
-            var (ok, message) = await _service.UpdateAsync(model);
+            var (ok, message) = await _bookService.UpdateAsync(model);
             if (!ok)
             {
                 ModelState.AddModelError("", message);
@@ -105,7 +108,7 @@ namespace SchoolLibrary.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var book = await _service.GetByIdAsync(id);
+            var book = await _bookService.GetByIdAsync(id);
             return book == null ? NotFound() : View(book);
         }
 
@@ -113,7 +116,7 @@ namespace SchoolLibrary.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var (ok, message) = await _service.DeleteAsync(id);
+            var (ok, message) = await _bookService.DeleteAsync(id);
 
             TempData["Message"] = message;
             return RedirectToAction(nameof(Index));

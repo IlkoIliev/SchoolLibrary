@@ -1,5 +1,6 @@
 ﻿using SchoolLibrary.Data.Entities;
 using SchoolLibrary.Models.Loans;
+using SchoolLibrary.Models.Paging;
 using SchoolLibrary.Repositories;
 
 namespace SchoolLibrary.Services
@@ -72,5 +73,39 @@ namespace SchoolLibrary.Services
 
         public Task<List<Loan>> GetLastActiveAsync(int take)
             => _repo.GetLastActiveAsync(take);
+
+        public async Task<PagedResult<Loan>> GetActivePagedAsync(int page, int pageSize)
+        {
+            if (page < 1) page = 1;
+            if (pageSize < 1) pageSize = 10;
+            if (pageSize > 50) pageSize = 50;
+
+            var (items, totalItems) = await _repo.GetActivePagedAsync(page, pageSize);
+
+            return new PagedResult<Loan>
+            {
+                Items = items,
+                Page = page,
+                PageSize = pageSize,
+                TotalItems = totalItems
+            };
+        }
+
+        public async Task<PagedResult<Loan>> GetHistoryPagedAsync(int page, int pageSize)
+        {
+            if (page < 1) page = 1;
+            if (pageSize < 1) pageSize = 10;
+            if (pageSize > 50) pageSize = 50;
+
+            var (items, totalItems) = await _repo.GetHistoryPagedAsync(page, pageSize);
+
+            return new PagedResult<Loan>
+            {
+                Items = items,
+                Page = page,
+                PageSize = pageSize,
+                TotalItems = totalItems
+            };
+        }
     }
 }

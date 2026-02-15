@@ -1,42 +1,89 @@
-﻿@model List<SchoolLibrary.Data.Entities.Loan>
+﻿@using SchoolLibrary.Models.Paging
+@model PagedResult<SchoolLibrary.Data.Entities.Loan>
 
 <h2>Loans History</h2>
 
-<p>
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-info">@TempData["Message"]</div>
+}
+
+<p class="mb-3">
     <a asp-action="Index" class="btn btn-secondary">Active Loans</a>
     <a asp-action="Create" class="btn btn-primary">+ New Loan</a>
 </p>
 
-<table class="table">
+<table class="table table-striped align-middle">
     <thead>
         <tr>
             <th>Student</th>
             <th>Book</th>
             <th>Loan Date</th>
             <th>Return Date</th>
-            <th>Status</th>
+            <th style="width: 140px;">Status</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var l in Model)
+        @if (Model.Items.Count == 0)
         {
-            var isActive = l.ReturnDate == null;
             <tr>
-                <td>@l.Student.FullName (@l.Student.Grade)</td>
-                <td>@l.Book.Title - @l.Book.Author.Name</td>
-                <td>@l.LoanDate</td>
-                <td>@(l.ReturnDate?.ToString() ?? "-")</td>
-                <td>
-                    @if (isActive)
-                    {
-                        <span class="badge bg-warning text-dark">Active</span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-success">Returned</span>
-                    }
-                </td>
+                <td colspan="5" class="text-muted">Няма записи.</td>
             </tr>
+        }
+        else
+        {
+            foreach (var l in Model.Items)
+            {
+                var isActive = l.ReturnDate == null;
+
+                <tr>
+                    <td>@l.Student.FullName (@l.Student.Grade)</td>
+                    <td>@l.Book.Title - @l.Book.Author.Name</td>
+                    <td>@l.LoanDate.ToString("dd.MM.yyyy")</td>
+                    <td>@(l.ReturnDate.HasValue? l.ReturnDate.Value.ToString("dd.MM.yyyy") : "-")</td>
+                    <td>
+                        @if (isActive)
+                        {
+                            <span class="badge bg-success">Active</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Returned</span>
+                        }
+                    </td>
+                </tr>
+            }
         }
     </tbody>
 </table>
+
+@if (Model.TotalPages > 1)
+{
+    <nav aria-label="Loans history paging">
+        <ul class="pagination">
+            <li class="page-item @(Model.HasPrevious ? "" : "disabled")">
+                <a class="page-link"
+                   asp-action="History"
+                   asp-route-page="@(Model.Page - 1)"
+                   asp-route-pageSize="@Model.PageSize">Previous</a>
+            </li>
+
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.Page ? "active" : "")">
+                    <a class="page-link"
+                       asp-action="History"
+                       asp-route-page="@i"
+                       asp-route-pageSize="@Model.PageSize">@i</a>
+                </li>
+            }
+
+            <li class="page-item @(Model.HasNext ? "" : "disabled")">
+                <a class="page-link"
+                   asp-action="History"
+                   asp-route-page="@(Model.Page + 1)"
+                   asp-route-pageSize="@Model.PageSize">Next</a>
+            </li>
+        </ul>
+    </nav>
+}

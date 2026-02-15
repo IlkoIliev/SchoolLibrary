@@ -83,5 +83,40 @@ namespace SchoolLibrary.Repositories
                 .OrderByDescending(l => l.LoanDate)
                 .Take(take)
                 .ToListAsync();
+
+        public async Task<(List<Loan> items, int totalItems)> GetActivePagedAsync(int page, int pageSize)
+        {
+            var query = _context.Loans
+                .Include(l => l.Student)
+                .Include(l => l.Book).ThenInclude(b => b.Author)
+                .Where(l => l.ReturnDate == null)
+                .OrderByDescending(l => l.LoanDate);
+
+            var totalItems = await query.CountAsync();
+
+            var items = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, totalItems);
+        }
+
+        public async Task<(List<Loan> items, int totalItems)> GetHistoryPagedAsync(int page, int pageSize)
+        {
+            var query = _context.Loans
+                .Include(l => l.Student)
+                .Include(l => l.Book).ThenInclude(b => b.Author)
+                .OrderByDescending(l => l.LoanDate);
+
+            var totalItems = await query.CountAsync();
+
+            var items = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, totalItems);
+        }
     }
 }

@@ -48,5 +48,22 @@ namespace SchoolLibrary.Repositories
 
         public Task<int> CountAsync()
             => _context.Books.CountAsync();
+
+        public async Task<(List<Book> items, int totalItems)> GetPagedAsync(int page, int pageSize)
+        {
+            var query = _context.Books
+                .Include(b => b.Author)
+                .AsQueryable();
+
+            var totalItems = await query.CountAsync();
+
+            var items = await query
+                .OrderBy(b => b.Title)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, totalItems);
+        }
     }
 }

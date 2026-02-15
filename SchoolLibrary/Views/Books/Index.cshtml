@@ -1,4 +1,5 @@
-﻿@model List<SchoolLibrary.Data.Entities.Book>
+﻿@using SchoolLibrary.Models.Paging
+@model PagedResult<SchoolLibrary.Data.Entities.Book>
 
 <h2>Books</h2>
 
@@ -7,44 +8,61 @@
     <div class="alert alert-success">@TempData["Message"]</div>
 }
 
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger">@TempData["Error"]</div>
-}
-
 <p>
     <a asp-action="Create" class="btn btn-primary">+ Добави книга</a>
 </p>
 
-@if (Model == null || !Model.Any())
-{
-    <p class="text-muted">Няма добавени книги.</p>
-}
-else
-{
-    <table class="table">
-        <thead>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Year</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var b in Model.Items)
+        {
             <tr>
-                <th>Title</th>
-                <th>Author</th>
-                <th>Year</th>
-                <th>Actions</th>
+                <td>@b.Title</td>
+                <td>@b.Author?.Name</td>
+                <td>@b.Year</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@b.Id" class="btn btn-sm btn-info">Details</a>
+                    <a asp-action="Edit" asp-route-id="@b.Id" class="btn btn-sm btn-warning">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@b.Id" class="btn btn-sm btn-danger">Delete</a>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var b in Model)
-            {
-                <tr>
-                    <td>@b.Title</td>
-                    <td>@b.Author?.Name</td>
-                    <td>@b.Year</td>
-                    <td>
-                        <a asp-action="Details" asp-route-id="@b.Id" class="btn btn-sm btn-info">Details</a>
-                        <a asp-action="Edit" asp-route-id="@b.Id" class="btn btn-sm btn-warning">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@b.Id" class="btn btn-sm btn-danger">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+        }
+    </tbody>
+</table>
+
+<nav aria-label="Books paging">
+    <ul class="pagination">
+
+        <li class="page-item @(Model.HasPrevious ? "" : "disabled")">
+            <a class="page-link"
+               asp-action="Index"
+               asp-route-page="@(Model.Page - 1)"
+               asp-route-pageSize="@Model.PageSize">Previous</a>
+        </li>
+
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.Page ? "active" : "")">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-page="@i"
+                   asp-route-pageSize="@Model.PageSize">@i</a>
+            </li>
+        }
+
+        <li class="page-item @(Model.HasNext ? "" : "disabled")">
+            <a class="page-link"
+               asp-action="Index"
+               asp-route-page="@(Model.Page + 1)"
+               asp-route-pageSize="@Model.PageSize">Next</a>
+        </li>
+    </ul>
+</nav>

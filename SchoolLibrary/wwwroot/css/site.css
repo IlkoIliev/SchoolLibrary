@@ -20,3 +20,13 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.search-btn {
+    background-color: #0d6efd;
+    color: white;
+    border: none;
+}
+
+    .search-btn:hover {
+        background-color: #0b5ed7;
+    }

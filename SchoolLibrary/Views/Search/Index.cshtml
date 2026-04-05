@@ -1,0 +1,105 @@
+﻿@model SchoolLibrary.Models.Search.SearchResultViewModel
+
+<h2>Search Results</h2>
+
+@if (string.IsNullOrEmpty(Model.Query))
+{
+    <p>Въведете текст за търсене.</p>
+}
+else
+{
+    <h4>Results for: "@Model.Query"</h4>
+
+    <hr />
+
+    <h5>📚 Books</h5>
+    @if (Model.Books.Any())
+    {
+        <ul>
+            @foreach (var b in Model.Books)
+            {
+                <li>
+                    <a asp-controller="Books" asp-action="Details" asp-route-id="@b.Id">
+                        <b>@b.Title</b>
+                    </a>
+                    – @b.Author?.Name
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>No books found.</p>
+    }
+
+    <h5>✍ Authors</h5>
+    @if (Model.Authors.Any())
+    {
+        <ul>
+            @foreach (var a in Model.Authors)
+            {
+                <li>
+                    <a asp-controller="Authors" asp-action="Details" asp-route-id="@a.Id">
+                        @a.Name
+                    </a>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>No authors found.</p>
+    }
+
+    <h5>👨‍🎓 Students</h5>
+    @if (Model.Students.Any())
+    {
+        <ul>
+            @foreach (var s in Model.Students)
+            {
+                <li>
+                    <a asp-controller="Students" asp-action="Details" asp-route-id="@s.Id">
+                        @s.FullName
+                    </a>
+                    (@s.Grade)
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>No students found.</p>
+    }
+    <h5>🔄 Loans</h5>
+    @if (Model.Loans.Any())
+    {
+        <ul>
+            @foreach (var l in Model.Loans)
+            {
+                <li>
+                    <a asp-controller="Students" asp-action="Details" asp-route-id="@l.StudentId">
+                        <b>@l.Student.FullName (@l.Student.Grade)</b>
+                    </a>
+                    →
+                    <a asp-controller="Books" asp-action="Details" asp-route-id="@l.BookId">
+                        @l.Book.Title
+                    </a>
+                    <span class="text-muted">(@l.LoanDate.ToString("dd.MM.yyyy"))</span>
+
+                    @if (l.ReturnDate == null)
+                    {
+                        <span class="badge bg-success ms-1">Active</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary ms-1">Returned</span>
+                    }
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>No loans found.</p>
+    }
+}
